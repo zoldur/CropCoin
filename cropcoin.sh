@@ -178,6 +178,7 @@ echo
 echo -e "======================================================================================================================="
 echo -e "Cropcoin Masternode is up and running as user ${GREEN}$CROPCOINUSER${NC} and it is listening on port ${GREEN}$CROPCOINPORT${NC}." 
 echo -e "Configuration file is: ${RED}$CROPCOINFOLDER/cropcoin.conf${NC}"
+echo -e "VPS_IP:PORT ${RED}$NODEIP:$CROPCOINPORT${NC}"
 echo -e "MASTERNODE PRIVATEKEY is: ${RED}$CROPCOINLEKEY${NC}"
 echo -e "========================================================================================================================"
 
