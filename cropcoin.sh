@@ -74,8 +74,10 @@ cd -
 rm -f gmp-6.1.2.tar.lz
 clear
 
-git clone https://github.com/Cropdev/CropDev.git 
-cd CropDev/src/secp256k1
+wget https://github.com/Cropdev/CropDev/archive/v1.0.0.1.tar.gz
+tar -xvf v1.0.0.1.tar.gz
+cd CropDev-1.0.0.1/src/secp256k1
+chmod +x autogen.sh
 ./autogen.sh
 ./configure
 make
