@@ -15,8 +15,9 @@ if [ -n "$(pidof cropcoind)" ]; then
   echo -e "${GREEN}Cropcoind already running.${NC}"
   exit 1
 fi
-
 echo -e "Prepare the system to install Cropcoin master node."
+apt-get update > /dev/null 2>&1
+apt install -y software-properties-common > /dev/null 2>&1
 echo -e "${GREEN}Adding bitcoin PPA repository"
 apt-add-repository -y ppa:bitcoin/bitcoin > /dev/null 2>&1
 echo -e "Installing required packages, it may take some time to finish.${NC}"
