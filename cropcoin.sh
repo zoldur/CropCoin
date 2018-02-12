@@ -72,6 +72,7 @@ make install
 make check
 cd -
 rm -f gmp-6.1.2.tar.lz
+clear
 
 git clone https://github.com/Cropdev/CropDev.git 
 cd CropDev/src/secp256k1
@@ -80,7 +81,10 @@ cd CropDev/src/secp256k1
 make
 ./tests
 make install
+clear
 cd ..
+mkdir obj/support
+mkdir obj/crypto
 make -f makefile.unix
 if [ "$?" -gt "0" ];
  then
@@ -93,7 +97,7 @@ chown $CROPCOINUSER: /usr/local/bin/cropcoind
 clear
 
 echo -e "${GREEN}Prepare to configure and start Cropcoin Masternode.${NC}"
-DEFAULTCROPCOINFOLDER="$CROPCOINHOME/.Cropcoin"
+DEFAULTCROPCOINFOLDER="$CROPCOINHOME/.cropcoin"
 read -p "Configuration folder: " -i $DEFAULTCROPCOINFOLDER -e CROPCOINFOLDER
 : ${CROPCOINFOLDER:=$DEFAULTCROPCOINFOLDER}
 
@@ -104,7 +108,7 @@ read -p "CROPCOIN Port: " -i $DEFAULTCROPCOINPORT -e CROPCOINPORT
 mkdir -p $CROPCOINFOLDER
 RPCUSER=$(pwgen -s 8 1)
 RPCPASSWORD=$(pwgen -s 15 1)
-cat << EOF > $CROPCOINFOLDER/Cropcoin.conf
+cat << EOF > $CROPCOINFOLDER/cropcoin.conf
 rpcuser=$RPCUSER
 rpcpassword=$RPCPASSWORD
 rpcallowip=127.0.0.1
@@ -173,7 +177,7 @@ fi
 echo
 echo -e "======================================================================================================================="
 echo -e "Cropcoin Masternode is up and running as user ${GREEN}$CROPCOINUSER${NC} and it is listening on port ${GREEN}$CROPCOINPORT${NC}." 
-echo -e "Configuration file is: ${RED}$CROPCOINFOLDER/Cropcoin.conf${NC}"
+echo -e "Configuration file is: ${RED}$CROPCOINFOLDER/cropcoin.conf${NC}"
 echo -e "MASTERNODE PRIVATEKEY is: ${RED}$CROPCOINLEKEY${NC}"
 echo -e "========================================================================================================================"
 
