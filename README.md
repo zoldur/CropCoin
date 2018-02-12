@@ -46,5 +46,6 @@ cropcoind getinfo
   
 Any donation is highly appreciated  
 
-BTC: 1BzeQ12m4zYaQKqysGNVbQv1taN7qgS8gY  
-ETH: 0x39d10fe57611c564abc255ffd7e984dc97e9bd6d  
+**CROP**: cKH8Gea49ZtNLLV1Q4zcQaFY7K1uQ2ki5s  
+**BTC**: 1BzeQ12m4zYaQKqysGNVbQv1taN7qgS8gY  
+**ETH**: 0x39d10fe57611c564abc255ffd7e984dc97e9bd6d  
