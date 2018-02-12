@@ -1,4 +1,4 @@
-# Beetle
+# CropCoin
 Shell script to install a [Cropcoin Masternode](https://bitcointalk.org/index.php?topic=2863802.0). Use it on your own risk.  
 
 ***
