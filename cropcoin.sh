@@ -79,10 +79,9 @@ tar -xvf v1.0.0.1.tar.gz
 cd CropDev-1.0.0.1/src/secp256k1
 chmod +x autogen.sh
 ./autogen.sh
-./configure
+./configure --enable-module-recovery
 make
 ./tests
-make install
 clear
 cd ..
 mkdir obj/support
