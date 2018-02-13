@@ -8,7 +8,13 @@ if [ "$?" -gt "0" ];
 fi
 }
 
+
 function checks() {
+if [[ $(lsb_release -d) != *16.04* ]]; then
+  echo -e "${RED}You are not running Ubuntu 16.04. Installation is cancelled.${NC}"
+  exit 1
+fi
+
 if [[ $EUID -ne 0 ]]; then
    echo -e "${RED}$0 must be run as root.${NC}" 
    exit 1
@@ -136,7 +142,6 @@ clear
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
-
 
 checks
 prepare_system
