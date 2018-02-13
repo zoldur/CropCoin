@@ -40,6 +40,13 @@ su - cropcoin
 cropcoind masternode status
 cropcoind getinfo
 ```  
+Also, if you want to check/start/stop **cropcoind** , run one of the following commands as **root**:
+```
+systemctl status cropcoind #To check the service is running  
+systemctl start cropcoind #To start cropcoind service  
+systemctl stop cropcoind #To stop cropcpoind service  
+```
+
 
 ***
 
