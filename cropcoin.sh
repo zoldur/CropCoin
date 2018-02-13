@@ -16,13 +16,12 @@ if [ -n "$(pidof cropcoind)" ]; then
   exit 1
 fi
 echo -e "Prepare the system to install Cropcoin master node."
-export DEBIAN_FRONTEND=noninteractive
-apt-get -q update
-apt install -q -y software-properties-common
+apt-get update >/dev/null 2>&1
+apt install -y software-properties-common >/dev/null 2>&1
 echo -e "${GREEN}Adding bitcoin PPA repository"
 apt-add-repository -y ppa:bitcoin/bitcoin >/dev/null 2>&1
 echo -e "Installing required packages, it may take some time to finish.${NC}"
-apt-get update 
+apt-get update >/dev/null 2>&1
 apt-get install -y make software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev \
 libboost-filesystem-dev libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git \
 wget pwgen curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev lzip
@@ -94,7 +93,6 @@ if [ "$?" -gt "0" ];
   exit 1
 fi
 cp -a cropcoind /usr/local/bin
-chown $CROPCOINUSER: /usr/local/bin/cropcoind
 
 clear
 
@@ -105,7 +103,7 @@ read -p "Configuration folder: " -i $DEFAULTCROPCOINFOLDER -e CROPCOINFOLDER
 
 DEFAULTCROPCOINPORT=17720
 read -p "CROPCOIN Port: " -i $DEFAULTCROPCOINPORT -e CROPCOINPORT
-: ${CROPCOINPORT:=$DEFAULTCROPCOINPOR}
+: ${CROPCOINPORT:=$DEFAULTCROPCOINPORT}
 
 mkdir -p $CROPCOINFOLDER
 RPCUSER=$(pwgen -s 8 1)
@@ -135,9 +133,10 @@ kill $(pidof cropcoind)
 sed -i 's/daemon=1/daemon=0/' $CROPCOINFOLDER/cropcoin.conf
 NODEIP=$(curl -s4 icanhazip.com)
 cat << EOF >> $CROPCOINFOLDER/cropcoin.conf
+logtimestamps=1
 maxconnections=256
 masternode=1
-masternodeaddr=$NODEIP
+masternodeaddr=$NODEIP:$CROPCOINPORT
 masternodeprivkey=$CROPCOINLEKEY
 EOF
 chown -R $CROPCOINUSER: $CROPCOINFOLDER >/dev/null
