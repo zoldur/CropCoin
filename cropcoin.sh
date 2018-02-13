@@ -166,7 +166,7 @@ DEFAULTCROPCOINPORT=17720
 read -p "CROPCOIN Port: " -i $DEFAULTCROPCOINPORT -e CROPCOINPORT
 : ${CROPCOINPORT:=$DEFAULTCROPCOINPORT}
 
-read -p "Press enter to generate a new Masternode Private Key or type in your private key" -e CROPCOINKEY
+read -p "Enter your ${RED}Masternode Private Key${NC}. Leave it blank to generate a new {RED}Masternode Private Key{NC} for you: " -e CROPCOINKEY
 if [[ -z "$CROPCOINKEY" ]]; then
  sudo -u $CROPCOINUSER /usr/local/bin/cropcoind -conf=$CROPCOINFOLDER/cropcoin.conf -datadir=$CROPCOINFOLDER
  sleep 5
