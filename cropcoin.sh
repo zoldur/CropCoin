@@ -22,8 +22,8 @@ apt install -q -y software-properties-common
 echo -e "${GREEN}Adding bitcoin PPA repository"
 apt-add-repository -y ppa:bitcoin/bitcoin >/dev/null 2>&1
 echo -e "Installing required packages, it may take some time to finish.${NC}"
-apt-get update -q
-apt-get install -y -q software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev \
+apt-get update 
+apt-get install -y make software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev \
 libboost-filesystem-dev libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git \
 wget pwgen curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev lzip
 clear
@@ -34,7 +34,7 @@ if [ "$?" -gt "0" ];
     echo "apt -y install software-properties-common"
     echo "apt-add-repository -y ppa:bitcoin/bitcoin"
     echo "apt-get update"
-    echo "apt install -y build-essential libtool software-properties-common autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev \
+    echo "apt install -y make build-essential libtool software-properties-common autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev \
 libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git pwgen curl libdb4.8-dev \
 bsdmainutils libdb4.8++-dev libminiupnpc-dev lzip"
 exit 1
