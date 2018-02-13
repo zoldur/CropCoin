@@ -33,7 +33,7 @@ After the MN is up and running, you need to configure the desktop wallet accordi
 
 ## Usage:  
 
-For security reasons **CropCoin** is installed under **cropcoin** user, hence you need to **su - cropcoin** before chcking:    
+For security reasons **CropCoin** is installed under **cropcoin** user, hence you need to **su - cropcoin** before checking:    
 
 ```
 su - cropcoin
