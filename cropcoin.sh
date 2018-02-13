@@ -16,13 +16,14 @@ if [ -n "$(pidof cropcoind)" ]; then
   exit 1
 fi
 echo -e "Prepare the system to install Cropcoin master node."
-apt-get update > /dev/null 2>&1
-apt install -y software-properties-common > /dev/null 2>&1
+export DEBIAN_FRONTEND=noninteractive
+apt-get -q update
+apt install -q -y software-properties-common
 echo -e "${GREEN}Adding bitcoin PPA repository"
-apt-add-repository -y ppa:bitcoin/bitcoin > /dev/null 2>&1
+apt-add-repository -q -y ppa:bitcoin/bitcoin
 echo -e "Installing required packages, it may take some time to finish.${NC}"
-apt-get update > /dev/null 2>&1
-apt-get install -y software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev \
+apt-get update -q
+apt-get install -y -q software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev \
 libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget pwgen curl libdb4.8-dev \
 bsdmainutils libdb4.8++-dev libminiupnpc-dev lzip
 clear
@@ -163,6 +164,7 @@ if [ "$FWSTATUS" = "active" ]; then
 fi
 
 systemctl daemon-reload
+sleep 3
 systemctl start cropcoind.service
 systemctl enable cropcoind.service
 
