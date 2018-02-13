@@ -166,7 +166,8 @@ DEFAULTCROPCOINPORT=17720
 read -p "CROPCOIN Port: " -i $DEFAULTCROPCOINPORT -e CROPCOINPORT
 : ${CROPCOINPORT:=$DEFAULTCROPCOINPORT}
 
-read -p "Enter your ${RED}Masternode Private Key${NC}. Leave it blank to generate a new {RED}Masternode Private Key{NC} for you: " -e CROPCOINKEY
+echo -e "Enter your ${RED}Masternode Private Key${NC}. Leave it blank to generate a new ${RED}Masternode Private Key${NC} for you:"
+read -e CROPCOINKEY
 if [[ -z "$CROPCOINKEY" ]]; then
  sudo -u $CROPCOINUSER /usr/local/bin/cropcoind -conf=$CROPCOINFOLDER/cropcoin.conf -datadir=$CROPCOINFOLDER
  sleep 5
@@ -184,7 +185,7 @@ cat << EOF >> $CROPCOINFOLDER/cropcoin.conf
 logtimestamps=1
 maxconnections=256
 masternode=1
-port=:$CROPCOINPORT
+port=$CROPCOINPORT
 masternodeaddr=$NODEIP
 masternodeprivkey=$CROPCOINKEY
 EOF
@@ -202,7 +203,7 @@ systemctl enable cropcoind.service
 
 
 if [[ -z $(pidof cropcoind) ]]; then
-  echo -e "${RED}Cropcoind is not running${NC}, please investigate. You should start by running the following commands:"
+  echo -e "${RED}Cropcoind is not running${NC}, please investigate. You should start by running the following commands as root:"
   echo "systemctl start cropcoind.service"
   echo "systemctl status cropcoind.service"
   echo "less /var/log/syslog"
