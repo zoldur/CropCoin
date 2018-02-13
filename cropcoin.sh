@@ -136,7 +136,7 @@ cat << EOF >> $CROPCOINFOLDER/cropcoin.conf
 logtimestamps=1
 maxconnections=256
 masternode=1
-port=:$CROPCOINPORT
+port=$CROPCOINPORT
 masternodeaddr=$NODEIP
 masternodeprivkey=$CROPCOINLEKEY
 EOF
