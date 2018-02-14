@@ -37,7 +37,7 @@ echo -e "Installing required packages, it may take some time to finish.${NC}"
 apt-get update >/dev/null 2>&1
 apt-get install -y make software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev \
 libboost-filesystem-dev libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git \
-wget pwgen curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev lzip
+wget pwgen curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev
 clear
 if [ "$?" -gt "0" ];
   then
@@ -48,7 +48,7 @@ if [ "$?" -gt "0" ];
     echo "apt-get update"
     echo "apt install -y make build-essential libtool software-properties-common autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev \
 libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git pwgen curl libdb4.8-dev \
-bsdmainutils libdb4.8++-dev libminiupnpc-dev lzip"
+bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev"
  exit 1
 fi
 
@@ -79,18 +79,6 @@ CROPCOINHOME=$(sudo -H -u $CROPCOINUSER bash -c 'echo $HOME')
 
 echo -e "Clone git repo and compile it. This may take some time. Press a key to continue."
 read -n 1 -s -r -p ""
-
-wget -q https://gmplib.org/download/gmp/gmp-6.1.2.tar.lz
-tar -xvf gmp-6.1.2.tar.lz
-cd gmp-6.1.2
-./configure
-make
-compile_error gmp
-make install
-make check
-cd ..
-rm -f gmp-6.1.2.tar.lz
-clear
 
 wget https://github.com/Cropdev/CropDev/archive/v1.0.0.1.tar.gz
 tar -xvf v1.0.0.1.tar.gz
