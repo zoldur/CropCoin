@@ -44,8 +44,7 @@ function prepare_system() {
 
 echo -e "Prepare the system to install Cropcoin master node."
 apt-get update >/dev/null 2>&1
-DEBIAN_FRONTEND=noninteractive apt-get update > /dev/null 2>&1
-DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq > /dev/null 2>&1
+DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 apt install -y software-properties-common >/dev/null 2>&1
 echo -e "${GREEN}Adding bitcoin PPA repository"
 apt-add-repository -y ppa:bitcoin/bitcoin >/dev/null 2>&1
