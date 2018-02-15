@@ -262,7 +262,7 @@ checks
 if [[ ("$NEW_CROP" == "y" || "$NEW_CROP" == "Y") ]]; then
   setup_node
   exit 0
-elif [[ ("$NEW_CROP" == "new" ]]; then
+elif [[ "$NEW_CROP" == "new" ]]; then
   prepare_system
   compile_cropcoin
   setup_node
