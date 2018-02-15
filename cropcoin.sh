@@ -1,5 +1,15 @@
 #!/bin/bash
 
+TMP_FOLDER=$(mktemp -d)
+USER_PASS=$(pwgen -s 10 1)
+CONFIG_FILE="cropcoin.conf"
+BINARY_FILE="/usr/local/bin/cropcoind"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+
 function compile_error() {
 if [ "$?" -gt "0" ];
  then
@@ -16,13 +26,15 @@ if [[ $(lsb_release -d) != *16.04* ]]; then
 fi
 
 if [[ $EUID -ne 0 ]]; then
-   echo -e "${RED}$0 must be run as root.${NC}" 
+   echo -e "${RED}$0 must be run as root.${NC}"
    exit 1
 fi
 
 if [ -n "$(pidof cropcoind)" ]; then
-  echo -e "${GREEN}Cropcoind already running.${NC}"
-  exit 1
+  echo -e "${GREEN}\c"
+  read -e -p "Cropcoind is already running. Do you want to add another MN? [Y/N]" NEW_CROP
+  echo -e "{NC}"
+  clear
 fi
 }
 
@@ -30,6 +42,8 @@ function prepare_system() {
 
 echo -e "Prepare the system to install Cropcoin master node."
 apt-get update >/dev/null 2>&1
+DEBIAN_FRONTEND=noninteractive apt-get update > /dev/null 2>&1
+DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq > /dev/null 2>&1
 apt install -y software-properties-common >/dev/null 2>&1
 echo -e "${GREEN}Adding bitcoin PPA repository"
 apt-add-repository -y ppa:bitcoin/bitcoin >/dev/null 2>&1
@@ -37,7 +51,7 @@ echo -e "Installing required packages, it may take some time to finish.${NC}"
 apt-get update >/dev/null 2>&1
 apt-get install -y make software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev \
 libboost-filesystem-dev libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git \
-wget pwgen curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev
+wget pwgen curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev 
 clear
 if [ "$?" -gt "0" ];
   then
@@ -68,146 +82,190 @@ fi
 clear
 }
 
-
 function compile_cropcoin() {
+  echo -e "Clone git repo and compile it. This may take some time. Press a key to continue."
+  read -n 1 -s -r -p ""
 
-DEFAULTCROPCOINUSER="cropcoin"
-read -p "Cropcoin user: " -i $DEFAULTCROPCOINUSER -e CROPCOINUSER
-: ${CROPCOINUSER:=$DEFAULTCROPCOINUSER}
-useradd -m $CROPCOINUSER >/dev/null
-CROPCOINHOME=$(sudo -H -u $CROPCOINUSER bash -c 'echo $HOME')
+  cd $TMP_FOLDER
+  wget https://github.com/Cropdev/CropDev/archive/v1.0.0.1.tar.gz
+  tar -xvf v1.0.0.1.tar.gz
+  cd CropDev-1.0.0.1/src/secp256k1
+  chmod +x autogen.sh
+  ./autogen.sh
+  ./configure --enable-module-recovery
+  make
 
-echo -e "Clone git repo and compile it. This may take some time. Press a key to continue."
-read -n 1 -s -r -p ""
-
-wget https://github.com/Cropdev/CropDev/archive/v1.0.0.1.tar.gz
-tar -xvf v1.0.0.1.tar.gz
-cd CropDev-1.0.0.1/src/secp256k1
-chmod +x autogen.sh
-./autogen.sh
-./configure --enable-module-recovery
-make
-
-./tests
-clear
-cd ..
-mkdir obj/support
-mkdir obj/crypto
-make -f makefile.unix
-compile_error cropcoin
-cp -a cropcoind /usr/local/bin
-clear
+  ./tests
+  clear
+  cd ..
+  mkdir obj/support
+  mkdir obj/crypto
+  make -f makefile.unix
+  compile_error cropcoin
+  cp -a cropcoind $BINARY_FILE
+  clear
 }
 
 function enable_firewall() {
-FWSTATUS=$(ufw status 2>/dev/null|awk '/^Status:/{print $NF}')
-if [ "$FWSTATUS" = "active" ]; then
-  echo -e "Setting up firewall to allow ingress on port ${GREEN}$CROPCOINPORT${NC}"
-  ufw allow $CROPCOINPORT/tcp comment "Cropcoin MN port" >/dev/null
-fi
+  FWSTATUS=$(ufw status 2>/dev/null|awk '/^Status:/{print $NF}')
+  if [ "$FWSTATUS" = "active" ]; then
+    echo -e "Setting up firewall to allow ingress on port ${GREEN}$CROPCOINPORT${NC}"
+    ufw allow $CROPCOINPORT/tcp comment "Cropcoin MN port" >/dev/null
+  fi
 }
 
-function systemd_crop() {
-
-cat << EOF > /etc/systemd/system/cropcoind.service
+function systemd_cropcoin() {
+  cat << EOF > /etc/systemd/system/$CROPCOINUSER.service
 [Unit]
 Description=Cropcoin service
 After=network.target
+
 [Service]
-ExecStart=/usr/local/bin/cropcoind -conf=$CROPCOINFOLDER/cropcoin.conf -datadir=$CROPCOINFOLDER
-ExecStop=/usr/local/bin/cropcoind -conf=$CROPCOINFOLDER/cropcoin.conf -datadir=$CROPCOINFOLDER stop
+ExecStart=$BINARY_FILE -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER
+ExecStop=$BINARY_FILE -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER stop
 Restart=on-abort
 User=$CROPCOINUSER
 Group=$CROPCOINUSER
+  
 [Install]
 WantedBy=multi-user.target
 EOF
+
+  systemctl daemon-reload
+  sleep 3
+  systemctl start $CROPCOINUSER.service
+  systemctl enable $CROPCOINUSER.service
+
+  if [[ -z $(pidof cropcoind) ]]; then
+    echo -e "${RED}Cropcoind is not running${NC}, please investigate. You should start by running the following commands as root:"
+    echo "systemctl start $CROPCOINUSER.service"
+    echo "systemctl status $CROPCOINUSER.service"
+    echo "less /var/log/syslog"
+    exit 1
+  fi
 }
+
+function ask_port() {
+DEFAULTCROPCOINPORT=17720
+read -p "CROPCOIN Port: " -i $DEFAULTCROPCOINPORT -e CROPCOINPORT
+: ${CROPCOINPORT:=$DEFAULTCROPCOINPORT}
+}
+
+function ask_user() {
+  DEFAULTCROPCOINUSER="cropcoin"
+  read -p "Cropcoin user: " -i $DEFAULTCROPCOINUSER -e CROPCOINUSER
+  : ${CROPCOINUSER:=$DEFAULTCROPCOINUSER}
+
+  if [ -z "$(getent passwd $CROPCOINUSER)" ]; then
+    useradd -m $CROPCOINUSER
+    echo "$CROPCOINUSER:$USER_PASS" | chpasswd
+
+    CROPCOINHOME=$(sudo -H -u $CROPCOINUSER bash -c 'echo $HOME')
+    DEFAULTCROPCOINFOLDER="$CROPCOINHOME/.cropcoin"
+    read -p "Configuration folder: " -i $DEFAULTCROPCOINFOLDER -e CROPCOINFOLDER
+    : ${CROPCOINFOLDER:=$DEFAULTCROPCOINFOLDER}
+    mkdir -p $CROPCOINFOLDER
+    chown -R $CROPCOINUSER: $CROPCOINFOLDER >/dev/null
+  else
+    clear
+    echo -e "${RED}User exits. Please enter another username: ${NC}"
+    ask_user
+  fi
+}
+
+function check_port() {
+  declare -a PORTS
+  PORTS=($(netstat -tnlp | awk '/LISTEN/ {print $4}' | awk -F":" '{print $NF}' | sort | uniq | tr '\r\n'  ' '))
+  ask_port
+
+  while [[ ${PORTS[@]} =~ $CROPCOINPORT ]] || [[ ${PORTS[@]} =~ $[CROPCOINPORT+1] ]]; do
+    clear
+    echo -e "${RED}Port in use, please choose another port:${NF}"
+    ask_port
+  done
+}
+
+function create_config() {
+  RPCUSER=$(pwgen -s 8 1)
+  RPCPASSWORD=$(pwgen -s 15 1)
+  cat << EOF > $CROPCOINFOLDER/$CONFIG_FILE
+rpcuser=$RPCUSER
+rpcpassword=$RPCPASSWORD
+rpcallowip=127.0.0.1
+rpcport=$[CROPCOINPORT+1]
+listen=1
+server=1
+daemon=1
+port=$CROPCOINPORT
+EOF
+}
+
+function create_key() {
+  echo -e "Enter your ${RED}Masternode Private Key${NC}. Leave it blank to generate a new ${RED}Masternode Private Key${NC} for you:"
+  read -e CROPCOINKEY
+  if [[ -z "$CROPCOINKEY" ]]; then
+  sudo -u $CROPCOINUSER /usr/local/bin/cropcoind -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER
+  sleep 5
+  if [ -z "$(pidof cropcoind)" ]; then
+   echo -e "${RED}Cropcoind server couldn't start. Check /var/log/syslog for errors.{$NC}"
+   exit 1
+  fi
+  CROPCOINKEY=$(sudo -u $CROPCOINUSER $BINARY_FILE -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER masternode genkey)
+  sudo -u $CROPCOINUSER $BINARY_FILE -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER stop
+fi
+}
+
+function update_config() {
+  sed -i 's/daemon=1/daemon=0/' $CROPCOINFOLDER/$CONFIG_FILE
+  NODEIP=$(curl -s4 icanhazip.com)
+  cat << EOF >> $CROPCOINFOLDER/$CONFIG_FILE
+logtimestamps=1
+maxconnections=256
+masternode=1
+masternodeaddr=$NODEIP
+masternodeprivkey=$CROPCOINKEY
+EOF
+  chown -R $CROPCOINUSER: $CROPCOINFOLDER >/dev/null
+}
+
+function important_information() {
+ echo
+ echo -e "================================================================================================================================"
+ echo -e "Cropcoin Masternode is up and running as user ${GREEN}$CROPCOINUSER${NC} and it is listening on port ${GREEN}$CROPCOINPORT${NC}."
+ echo -e "${GREEN}$CROPCOINUSER${NC} password is ${RED}$USER_PASS${NC}"
+ echo -e "Configuration file is: ${RED}$CROPCOINFOLDER/$CONFIG_FILE${NC}"
+ echo -e "Start: ${RED}systemctl start $CROPCOINUSER.service${NC}"
+ echo -e "Stop: ${RED}systemctl stop $CROPCOINUSER.service${NC}"
+ echo -e "VPS_IP:PORT ${RED}$NODEIP:$CROPCOINPORT${NC}"
+ echo -e "MASTERNODE PRIVATEKEY is: ${RED}$CROPCOINKEY${NC}"
+ echo -e "================================================================================================================================"
+}
+
+function setup_node() {
+  ask_user
+  check_port
+  create_config
+  create_key
+  update_config
+  enable_firewall
+  systemd_cropcoin
+  important_information
+}
+
 
 ##### Main #####
 clear
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m'
-
 checks
+if [[ ("$NEW_CROP" == "y" || "$NEW_CROP" == "Y") ]]; then
+  setup_node
+  exit 0
+else
+  echo -e "${GREEN}Cropcoind already running.${NC}"
+  exit 0
+fi
+
 prepare_system
 compile_cropcoin
-
-
-echo -e "${GREEN}Prepare to configure and start Cropcoin Masternode.${NC}"
-DEFAULTCROPCOINFOLDER="$CROPCOINHOME/.cropcoin"
-read -p "Configuration folder: " -i $DEFAULTCROPCOINFOLDER -e CROPCOINFOLDER
-: ${CROPCOINFOLDER:=$DEFAULTCROPCOINFOLDER}
-mkdir -p $CROPCOINFOLDER
-
-RPCUSER=$(pwgen -s 8 1)
-RPCPASSWORD=$(pwgen -s 15 1)
-cat << EOF > $CROPCOINFOLDER/cropcoin.conf
-rpcuser=$RPCUSER
-rpcpassword=$RPCPASSWORD
-rpcallowip=127.0.0.1
-listen=1
-server=1
-daemon=1
-EOF
-chown -R $CROPCOINUSER $CROPCOINFOLDER >/dev/null
-
-
-DEFAULTCROPCOINPORT=17720
-read -p "CROPCOIN Port: " -i $DEFAULTCROPCOINPORT -e CROPCOINPORT
-: ${CROPCOINPORT:=$DEFAULTCROPCOINPORT}
-
-echo -e "Enter your ${RED}Masternode Private Key${NC}. Leave it blank to generate a new ${RED}Masternode Private Key${NC} for you:"
-read -e CROPCOINKEY
-if [[ -z "$CROPCOINKEY" ]]; then
- sudo -u $CROPCOINUSER /usr/local/bin/cropcoind -conf=$CROPCOINFOLDER/cropcoin.conf -datadir=$CROPCOINFOLDER
- sleep 5
- if [ -z "$(pidof cropcoind)" ]; then
-   echo -e "${RED}Cropcoind server couldn't start. Check /var/log/syslog for errors.{$NC}"
-   exit 1
- fi
- CROPCOINKEY=$(sudo -u $CROPCOINUSER /usr/local/bin/cropcoind -conf=$CROPCOINFOLDER/cropcoin.conf -datadir=$CROPCOINFOLDER masternode genkey)
- kill $(pidof cropcoind)
-fi
-
-sed -i 's/daemon=1/daemon=0/' $CROPCOINFOLDER/cropcoin.conf
-NODEIP=$(curl -s4 icanhazip.com)
-cat << EOF >> $CROPCOINFOLDER/cropcoin.conf
-logtimestamps=1
-maxconnections=256
-masternode=1
-port=$CROPCOINPORT
-masternodeaddr=$NODEIP
-masternodeprivkey=$CROPCOINKEY
-EOF
-chown -R $CROPCOINUSER: $CROPCOINFOLDER >/dev/null
-
-
-systemd_crop
-enable_firewall
-
-
-systemctl daemon-reload
-sleep 3
-systemctl start cropcoind.service
-systemctl enable cropcoind.service
-
-
-if [[ -z $(pidof cropcoind) ]]; then
-  echo -e "${RED}Cropcoind is not running${NC}, please investigate. You should start by running the following commands as root:"
-  echo "systemctl start cropcoind.service"
-  echo "systemctl status cropcoind.service"
-  echo "less /var/log/syslog"
-  exit 1 
-fi
-
-echo
-echo -e "======================================================================================================================="
-echo -e "Cropcoin Masternode is up and running as user ${GREEN}$CROPCOINUSER${NC} and it is listening on port ${GREEN}$CROPCOINPORT${NC}." 
-echo -e "Configuration file is: ${RED}$CROPCOINFOLDER/cropcoin.conf${NC}"
-echo -e "VPS_IP:PORT ${RED}$NODEIP:$CROPCOINPORT${NC}"
-echo -e "MASTERNODE PRIVATEKEY is: ${RED}$CROPCOINKEY${NC}"
-echo -e "========================================================================================================================"
+setup_node
 

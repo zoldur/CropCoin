@@ -15,7 +15,7 @@ After the MN is up and running, you need to configure the desktop wallet accordi
 2. Go to RECEIVE and create a New Address: **MN1**  
 3. Send **1000** CROP to **MN1**.  
 4. Wait for 15 confirmations.  
-5. Go to **Tools -> "Debug console"**  
+5. Go to **Help -> "Debug Window - Console"**  
 6. Type the following command: **masternode outputs**  
 7. Go to **Masternodes** tab  
 8. Click **Create** and fill the details:  
@@ -42,14 +42,42 @@ cropcoind getinfo
 ```  
 Also, if you want to check/start/stop **cropcoind** , run one of the following commands as **root**:
 ```
-systemctl status cropcoind #To check the service is running  
-systemctl start cropcoind #To start cropcoind service  
-systemctl stop cropcoind #To stop cropcpoind service  
+systemctl status cropcoin #To check the service is running  
+systemctl start cropcoin #To start cropcoind service  
+systemctl stop cropcoin #To stop cropcpoind service  
 ```
 
 
 ***
 
+## Multiple MN on one VPS:
+
+It is now possible to run multiple **CropCoin** Master Nodes on the same VPS. Each MN will run under a different user you will choose during installation.  
+
+***
+
+## Usage:
+
+For security reasons **CropCoin** is installed under a normal user, usually **cropcoin**, hence you need to **su - cropcoin** before checking:  
+
+```
+CROPUSER=cropcoin #replace cropcoin with the MN username you want to check
+su - $CROPUSER
+cropcoind masternode status  
+cropcoind getinfo
+```
+
+Also, if you want to check/start/stop **cropcoin** daemon for a particular MN, run one of the following commands as **root**:
+
+```
+CROPUSER=cropcoin  #replace cropcoin with the MN username you want to check  
+  
+systemctl status $CROPUSER #To check the service is running  
+systemctl start $CROPUSER #To start cropcoind service  
+systemctl stop $CROPUSER #To stop cropcpoind service  
+systemctl is-enabled $CROPUSER #To check cropcoind service is enabled on boot  
+```  
+  
   
 Any donation is highly appreciated  
 
