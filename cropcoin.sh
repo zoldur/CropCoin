@@ -35,6 +35,8 @@ if [ -n "$(pidof cropcoind)" ]; then
   read -e -p "Cropcoind is already running. Do you want to add another MN? [Y/N]" NEW_CROP
   echo -e "{NC}"
   clear
+else
+  NEW_CROP="new"
 fi
 }
 
@@ -260,12 +262,12 @@ checks
 if [[ ("$NEW_CROP" == "y" || "$NEW_CROP" == "Y") ]]; then
   setup_node
   exit 0
+elif [[ ("$NEW_CROP" == "new" ]]; then
+  prepare_system
+  compile_cropcoin
+  setup_node
 else
   echo -e "${GREEN}Cropcoind already running.${NC}"
   exit 0
 fi
-
-prepare_system
-compile_cropcoin
-setup_node
 
