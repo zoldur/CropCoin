@@ -1,7 +1,6 @@
 #!/bin/bash
 
 TMP_FOLDER=$(mktemp -d)
-USER_PASS=$(pwgen -s 10 1)
 CONFIG_FILE="cropcoin.conf"
 BINARY_FILE="/usr/local/bin/cropcoind"
 
@@ -159,7 +158,8 @@ function ask_user() {
 
   if [ -z "$(getent passwd $CROPCOINUSER)" ]; then
     useradd -m $CROPCOINUSER
-    echo "$CROPCOINUSER:$USER_PASS" | chpasswd
+    USERPASS=$(pwgen -s 12 1)
+    echo "$CROPCOINUSER:$USERPASS" | chpasswd
 
     CROPCOINHOME=$(sudo -H -u $CROPCOINUSER bash -c 'echo $HOME')
     DEFAULTCROPCOINFOLDER="$CROPCOINHOME/.cropcoin"
