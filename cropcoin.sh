@@ -233,7 +233,7 @@ function important_information() {
  echo
  echo -e "================================================================================================================================"
  echo -e "Cropcoin Masternode is up and running as user ${GREEN}$CROPCOINUSER${NC} and it is listening on port ${GREEN}$CROPCOINPORT${NC}."
- echo -e "${GREEN}$CROPCOINUSER${NC} password is ${RED}$USER_PASS${NC}"
+ echo -e "${GREEN}$CROPCOINUSER${NC} password is ${RED}$USERPASS${NC}"
  echo -e "Configuration file is: ${RED}$CROPCOINFOLDER/$CONFIG_FILE${NC}"
  echo -e "Start: ${RED}systemctl start $CROPCOINUSER.service${NC}"
  echo -e "Stop: ${RED}systemctl stop $CROPCOINUSER.service${NC}"
