@@ -59,7 +59,8 @@ systemctl start $CROPUSER #To start cropcoind service
 systemctl stop $CROPUSER #To stop cropcpoind service  
 systemctl is-enabled $CROPUSER #To check cropcoind service is enabled on boot  
 ```  
-  
+
+***
   
 Any donation is highly appreciated  
 
