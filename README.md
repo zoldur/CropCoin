@@ -31,25 +31,6 @@ After the MN is up and running, you need to configure the desktop wallet accordi
 
 ***
 
-## Usage:  
-
-For security reasons **CropCoin** is installed under **cropcoin** user, hence you need to **su - cropcoin** before checking:    
-
-```
-su - cropcoin
-cropcoind masternode status
-cropcoind getinfo
-```  
-Also, if you want to check/start/stop **cropcoind** , run one of the following commands as **root**:
-```
-systemctl status cropcoin #To check the service is running  
-systemctl start cropcoin #To start cropcoind service  
-systemctl stop cropcoin #To stop cropcpoind service  
-```
-
-
-***
-
 ## Multiple MN on one VPS:
 
 It is now possible to run multiple **CropCoin** Master Nodes on the same VPS. Each MN will run under a different user you will choose during installation.  
@@ -61,7 +42,8 @@ It is now possible to run multiple **CropCoin** Master Nodes on the same VPS. Ea
 For security reasons **CropCoin** is installed under a normal user, usually **cropcoin**, hence you need to **su - cropcoin** before checking:  
 
 ```
-CROPUSER=cropcoin #replace cropcoin with the MN username you want to check
+CROPUSER=cropcoin #replace cropcoin with the MN username you want to check  
+
 su - $CROPUSER
 cropcoind masternode status  
 cropcoind getinfo
