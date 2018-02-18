@@ -49,9 +49,9 @@ echo -e "${GREEN}Adding bitcoin PPA repository"
 apt-add-repository -y ppa:bitcoin/bitcoin >/dev/null 2>&1
 echo -e "Installing required packages, it may take some time to finish.${NC}"
 apt-get update >/dev/null 2>&1
-apt-get install -y make software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev \
+apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" make software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev \
 libboost-filesystem-dev libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git \
-wget pwgen curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev 
+wget pwgen curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw fail2ban
 clear
 if [ "$?" -gt "0" ];
   then
@@ -62,7 +62,7 @@ if [ "$?" -gt "0" ];
     echo "apt-get update"
     echo "apt install -y make build-essential libtool software-properties-common autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev \
 libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git pwgen curl libdb4.8-dev \
-bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev"
+bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw fail2ban"
  exit 1
 fi
 
@@ -107,11 +107,15 @@ function compile_cropcoin() {
 }
 
 function enable_firewall() {
-  FWSTATUS=$(ufw status 2>/dev/null|awk '/^Status:/{print $NF}')
-  if [ "$FWSTATUS" = "active" ]; then
-    echo -e "Setting up firewall to allow ingress on port ${GREEN}$CROPCOINPORT${NC}"
-    ufw allow $CROPCOINPORT/tcp comment "Cropcoin MN port" >/dev/null
-  fi
+  echo -e "Installing ${GREEN}fail2ban${NC} and setting up firewall to allow ingress on port ${GREEN}$CROPCOINPORT${NC}"
+  ufw allow $CROPCOINPORT/tcp comment "Cropcoin MN port" >/dev/null
+  ufw allow $[CROPCOINPORT+1]/tcp comment "Cropcoin RPC port" >/dev/null
+  ufw allow ssh >/dev/null 2>&1
+  ufw limit ssh/tcp >/dev/null 2>&1
+  ufw default allow outgoing >/dev/null 2>&1
+  echo "y" | ufw enable >/dev/null 2>&1
+  systemctl enable fail2ban >/dev/null 2>&1
+  systemctl start fail2ban >/dev/null 2>&1
 }
 
 function systemd_cropcoin() {
@@ -134,7 +138,7 @@ EOF
   systemctl daemon-reload
   sleep 3
   systemctl start $CROPCOINUSER.service
-  systemctl enable $CROPCOINUSER.service
+  systemctl enable $CROPCOINUSER.service >/dev/null 2>&1
 
   if [[ -z $(pidof cropcoind) ]]; then
     echo -e "${RED}Cropcoind is not running${NC}, please investigate. You should start by running the following commands as root:"
