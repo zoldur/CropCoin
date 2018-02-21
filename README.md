@@ -9,7 +9,7 @@ bash cropcoin.sh
 ***
 
 ## Update from v1.0.0.1 to v1.0.0.2
-wget -q https://raw.githubusercontent.com/zoldur/CropCoin/master/cropcoin_update.sh  
+wget -q https://raw.githubusercontent.com/zoldur/CropCoin/master/cropcoin_update.sh
 bash cropcoin_update.sh
 
 
