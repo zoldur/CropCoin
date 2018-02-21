@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 TMP_FOLDER=$(mktemp -d)
 CROP_REPO="https://github.com/Cropdev/CropDev.git"
 
