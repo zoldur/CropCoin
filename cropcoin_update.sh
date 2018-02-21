@@ -6,7 +6,7 @@ CROP_REPO="https://github.com/Cropdev/CropDev.git"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-NC='\033[0m
+NC='\033[0m'
 
 function compile_error() {
 if [ "$?" -gt "0" ];
