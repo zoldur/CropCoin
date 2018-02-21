@@ -26,20 +26,20 @@ function compile_new_wallet() {
  }
 
  function detect_and_stop_crop() {
- 	for s in $(grep cropcoin /etc/systemd/system/*.service -l | awk -F"/" '{print $NF}'); do
- 		systemctl stop $s
- 	done
+        for s in $(grep cropcoin /etc/systemd/system/*.service -l | awk -F"/" '{print $NF}'); do
+                systemctl stop $s
+        done
  }
 
 function detect_and_start_crop() {
- 	for s in $(grep cropcoin /etc/systemd/system/*.service -l | awk -F"/" '{print $NF}'); do
- 		systemctl start $s
- 	done
+        for s in $(grep cropcoin /etc/systemd/system/*.service -l | awk -F"/" '{print $NF}'); do
+                systemctl start $s
+        done
  }
 
  function backup_and_copy_wallet() {
- 	cp -a /usr/local/bin/cropcoind /usr/local/bin/cropcoind.v1
- 	cp -a $TMP_FOLDER/src/cropcoind /usr/local/bin
+        cp -a /usr/local/bin/cropcoind /usr/local/bin/cropcoind.v1
+        cp -a $TMP_FOLDER/src/cropcoind /usr/local/bin
  }
 
 echo -e "${GREEN}Going to compile the new wallet, please grab a beer.${NC}"
