@@ -9,6 +9,14 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m
 
+functions checks() {
+if [[ $EUID -ne 0 ]]; then
+   echo -e "${RED}$0 must be run as root.${NC}"
+   exit 1
+fi
+}
+
+
 function compile_error() {
 if [ "$?" -gt "0" ];
  then
@@ -43,6 +51,7 @@ function detect_and_start_crop() {
  	cp -a $TMP_FOLDER/src/cropcoind /usr/local/bin
  }
 
+checks
 echo -e "${GREEN}Going to compile the new wallet, please grab a beer.${NC}"
 compile_new_wallet
 echo -e "${GREEN}New wallet compiled, going to stop cropcoin, replace the wallet and start it again${NC}"
