@@ -2,7 +2,7 @@
 Shell script to install a [Cropcoin Masternode](https://bitcointalk.org/index.php?topic=2863802.0) on a Linux server running Ubuntu 16.04. Use it on your own risk.  
 
 ***
-## Installation for v1.0.0.1:  
+## Installation for v1.0.0.2:  
 ```
 wget -q https://raw.githubusercontent.com/zoldur/CropCoin/master/cropcoin.sh  
 bash cropcoin.sh
@@ -17,10 +17,11 @@ bash cropcoin_update.sh
 
 ## Desktop wallet setup  
 
+
 After the MN is up and running, you need to configure the desktop wallet accordingly. Here are the steps:  
 1. Open the CropCoin Desktop Wallet.  
 2. Go to RECEIVE and create a New Address: **MN1**  
-3. Send **1000** CROP to **MN1**.  
+3. Send **2500** CROP to **MN1**.  
 4. Wait for 15 confirmations.  
 5. Go to **Help -> "Debug Window - Console"**  
 6. Type the following command: **masternode outputs**  

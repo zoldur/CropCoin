@@ -3,6 +3,7 @@
 TMP_FOLDER=$(mktemp -d)
 CONFIG_FILE="cropcoin.conf"
 BINARY_FILE="/usr/local/bin/cropcoind"
+CROP_REPO="https://github.com/Cropdev/CropDev.git"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -86,10 +87,8 @@ function compile_cropcoin() {
   echo -e "Clone git repo and compile it. This may take some time. Press a key to continue."
   read -n 1 -s -r -p ""
 
-  cd $TMP_FOLDER
-  wget https://github.com/Cropdev/CropDev/archive/v1.0.0.1.tar.gz
-  tar -xvf v1.0.0.1.tar.gz
-  cd CropDev-1.0.0.1/src/secp256k1
+  git clone $CROP_REPO $TMP_FOLDER
+  cd $TMP_FOLDER/src/secp256k1
   chmod +x autogen.sh
   ./autogen.sh
   ./configure --enable-module-recovery
