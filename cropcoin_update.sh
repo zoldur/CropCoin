@@ -16,7 +16,6 @@ if [[ $EUID -ne 0 ]]; then
 fi
 }
 
-
 function compile_error() {
 if [ "$?" -gt "0" ];
  then
