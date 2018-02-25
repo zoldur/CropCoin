@@ -88,15 +88,16 @@ function compile_cropcoin() {
   read -n 1 -s -r -p ""
 
   git clone $CROP_REPO $TMP_FOLDER
-  cd $TMP_FOLDER/src/secp256k1
-  chmod +x autogen.sh
-  ./autogen.sh
-  ./configure --enable-module-recovery
-  make
+#  cd $TMP_FOLDER/src/secp256k1
+#  chmod +x autogen.sh
+#  ./autogen.sh
+#  ./configure --enable-module-recovery
+#  make
 
-  ./tests
-  clear
-  cd ..
+#  ./tests
+#  clear
+#  cd ..
+  cd $TMP_FOLDER/src
   mkdir obj/support
   mkdir obj/crypto
   make -f makefile.unix
@@ -124,7 +125,7 @@ Description=Cropcoin service
 After=network.target
 
 [Service]
-Type=forking
+Type=simple
 User=$CROPCOINUSER
 WorkingDirectory=$CROPCOINHOME
 ExecStart=$BINARY_FILE -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER -reindex
