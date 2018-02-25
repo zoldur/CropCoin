@@ -124,10 +124,10 @@ Description=Cropcoin service
 After=network.target
 
 [Service]
-Type=simple
+Type=forking
 User=$CROPCOINUSER
 WorkingDirectory=$CROPCOINHOME
-ExecStart=$BINARY_FILE -reindex -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER
+ExecStart=$BINARY_FILE -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER -reindex
 ExecStop=$BINARY_FILE -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER stop
 Restart=on-abort
   
