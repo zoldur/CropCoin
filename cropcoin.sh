@@ -124,11 +124,12 @@ Description=Cropcoin service
 After=network.target
 
 [Service]
-ExecStart=$BINARY_FILE -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER
+Type=simple
+User=$CROPCOINUSER
+WorkingDirectory=$CROPCOINHOME
+ExecStart=$BINARY_FILE -reindex -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER
 ExecStop=$BINARY_FILE -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER stop
 Restart=on-abort
-User=$CROPCOINUSER
-Group=$CROPCOINUSER
   
 [Install]
 WantedBy=multi-user.target
