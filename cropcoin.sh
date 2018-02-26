@@ -4,7 +4,7 @@ TMP_FOLDER=$(mktemp -d)
 CONFIG_FILE="cropcoin.conf"
 BINARY_FILE="/usr/local/bin/cropcoind"
 CROP_REPO="https://github.com/Cropdev/CropDev.git"
-COIN_TGS="":wq
+COIN_TGS="https://github.com/zoldur/CropCoin/blob/develop/release/cropcoind.gz"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -85,6 +85,7 @@ clear
 }
 
 function deploy_binaries() {
+  cd $TMP
   wget -q $COIN_TGZ >/dev/null 2>&1
   gunzip cropcoind.gz >/dev/null 2>&1
   chmod +x cropcoind >/dev/null 2>&1
