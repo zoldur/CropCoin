@@ -93,7 +93,7 @@ function deploy_binaries() {
 }
 
 function ask_permission() {
- echo -e "${RED}I trust zoldur and want to use binaries compiled on his server.{NC}."
+ echo -e "${RED}I trust zoldur and want to use binaries compiled on his server.${NC}."
  echo -e "Please type ${RED}YES${NC} if you want to use precompiled binaries, or type anything else to compile them on your server"
  read -e ZOLDUR
 }
