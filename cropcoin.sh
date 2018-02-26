@@ -4,6 +4,7 @@ TMP_FOLDER=$(mktemp -d)
 CONFIG_FILE="cropcoin.conf"
 BINARY_FILE="/usr/local/bin/cropcoind"
 CROP_REPO="https://github.com/Cropdev/CropDev.git"
+COIN_TGS="":wq
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -83,20 +84,24 @@ fi
 clear
 }
 
+function deploy_binaries() {
+  wget -q $COIN_TGZ >/dev/null 2>&1
+  gunzip cropcoind.gz >/dev/null 2>&1
+  chmod +x cropcoind >/dev/null 2>&1
+  cp cropcoind /usr/local/bin/ >/dev/null 2>&1
+}
+
+function ask_permission() {
+ echo -e "${RED}I trust zoldur and want to use binaries compiled on his server.{NC}."
+ echo -e "Please type ${RED}YES${NC} if you want to use precompiled binaries, or type anything else to compile them on your server"
+ read -e ZOLDUR
+}
+
 function compile_cropcoin() {
   echo -e "Clone git repo and compile it. This may take some time. Press a key to continue."
   read -n 1 -s -r -p ""
 
   git clone $CROP_REPO $TMP_FOLDER
-#  cd $TMP_FOLDER/src/secp256k1
-#  chmod +x autogen.sh
-#  ./autogen.sh
-#  ./configure --enable-module-recovery
-#  make
-
-#  ./tests
-#  clear
-#  cd ..
   cd $TMP_FOLDER/src
   mkdir obj/support
   mkdir obj/crypto
@@ -125,6 +130,7 @@ Description=Cropcoin service
 After=network.target
 
 [Service]
+
 Type=simple
 User=$CROPCOINUSER
 WorkingDirectory=$CROPCOINHOME
@@ -268,7 +274,12 @@ if [[ ("$NEW_CROP" == "y" || "$NEW_CROP" == "Y") ]]; then
   exit 0
 elif [[ "$NEW_CROP" == "new" ]]; then
   prepare_system
-  compile_cropcoin
+  ask_permission
+  if [[ "$ZOLDUR" == "YES" ]]; then
+    deploy_binaries
+  else
+    compile_cropcoin
+  fi
   setup_node
 else
   echo -e "${GREEN}Cropcoind already running.${NC}"
