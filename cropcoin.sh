@@ -275,12 +275,13 @@ if [[ ("$NEW_CROP" == "y" || "$NEW_CROP" == "Y") ]]; then
   exit 0
 elif [[ "$NEW_CROP" == "new" ]]; then
   prepare_system
-  ask_permission
-  if [[ "$ZOLDUR" == "YES" ]]; then
-    deploy_binaries
-  else
-    compile_cropcoin
-  fi
+  #ask_permission
+  #if [[ "$ZOLDUR" == "YES" ]]; then
+  #  deploy_binaries
+  #else
+  #  compile_cropcoin
+  #fi
+  compile_cropcoin
   setup_node
 else
   echo -e "${GREEN}Cropcoind already running.${NC}"
