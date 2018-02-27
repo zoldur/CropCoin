@@ -4,7 +4,7 @@ TMP_FOLDER=$(mktemp -d)
 CONFIG_FILE="cropcoin.conf"
 BINARY_FILE="/usr/local/bin/cropcoind"
 CROP_REPO="https://github.com/Cropdev/CropDev.git"
-COIN_TGS="https://github.com/zoldur/CropCoin/blob/develop/release/cropcoind.gz"
+COIN_TGZ='https://github.com/zoldur/CropCoin/raw/master/release/cropcoind.gz'
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -135,8 +135,9 @@ After=network.target
 Type=simple
 User=$CROPCOINUSER
 WorkingDirectory=$CROPCOINHOME
-ExecStart=$BINARY_FILE -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER -reindex
-ExecStop=$BINARY_FILE -conf=$CROPCOINFOLDER/$CONFIG_FILE -datadir=$CROPCOINFOLDER stop
+ExecStart=$BINARY_FILE -reindex
+ExecStop=$BINARY_FILE stop
+
 Restart=on-abort
   
 [Install]
@@ -275,13 +276,12 @@ if [[ ("$NEW_CROP" == "y" || "$NEW_CROP" == "Y") ]]; then
   exit 0
 elif [[ "$NEW_CROP" == "new" ]]; then
   prepare_system
-  #ask_permission
-  #if [[ "$ZOLDUR" == "YES" ]]; then
-  #  deploy_binaries
-  #else
-  #  compile_cropcoin
-  #fi
-  compile_cropcoin
+  ask_permission
+  if [[ "$ZOLDUR" == "YES" ]]; then
+    deploy_binaries
+  else
+    compile_cropcoin
+  fi
   setup_node
 else
   echo -e "${GREEN}Cropcoind already running.${NC}"
