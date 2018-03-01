@@ -133,13 +133,19 @@ After=network.target
 
 [Service]
 
-Type=simple
+Type=forking
 User=$CROPCOINUSER
+Group=$CROPCOINUSER
 WorkingDirectory=$CROPCOINHOME
-ExecStart=$BINARY_FILE -reindex
+ExecStart=$BINARY_FILE 
 ExecStop=$BINARY_FILE stop
 
-Restart=on-abort
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=10s
+StartLimitInterval=120s
+StartLimitBurst=5
   
 [Install]
 WantedBy=multi-user.target
