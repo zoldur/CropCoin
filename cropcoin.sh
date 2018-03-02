@@ -137,7 +137,7 @@ Type=forking
 User=$CROPCOINUSER
 Group=$CROPCOINUSER
 WorkingDirectory=$CROPCOINHOME
-ExecStart=$BINARY_FILE 
+ExecStart=$BINARY_FILE -daemon
 ExecStop=$BINARY_FILE stop
 
 Restart=always
