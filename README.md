@@ -14,7 +14,7 @@ bash cropcoin.sh
 After the MN is up and running, you need to configure the desktop wallet accordingly. Here are the steps:  
 1. Open the CropCoin Desktop Wallet.  
 2. Go to RECEIVE and create a New Address: **MN1**  
-3. Send **2500** CROP to **MN1**. This will chanage when reaching block 33333.
+3. Send **5000** CROP to **MN1**.
 4. Wait for 15 confirmations.  
 5. Go to **Help -> "Debug Window - Console"**  
 6. Type the following command: **masternode outputs**  
