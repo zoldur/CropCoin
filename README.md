@@ -1,7 +1,7 @@
 # CropCoin
 Shell script to install a [Cropcoin Masternode](https://bitcointalk.org/index.php?topic=2863802.0) on a Linux server running Ubuntu 16.04. Use it on your own risk.  
-
 ***
+
 ## Installation for v1.0.0.3:  
 ```
 wget -q https://raw.githubusercontent.com/zoldur/CropCoin/master/cropcoin.sh  
@@ -29,13 +29,11 @@ After the MN is up and running, you need to configure the desktop wallet accordi
 * Reward %: leave blank  
 9. Click **OK** to add the masternode  
 10. Click **Start All**  
-
 ***
 
 ## Multiple MN on one VPS:
 
 It is now possible to run multiple **CropCoin** Master Nodes on the same VPS. Each MN will run under a different user you will choose during installation.  
-
 ***
 
 ## Usage:
@@ -49,9 +47,7 @@ su - $CROPUSER
 cropcoind masternode status  
 cropcoind getinfo
 ```
-
 Also, if you want to check/start/stop **cropcoin** daemon for a particular MN, run one of the following commands as **root**:
-
 ```
 CROPUSER=cropcoin  #replace cropcoin with the MN username you want to check  
   
@@ -60,9 +56,16 @@ systemctl start $CROPUSER #To start cropcoind service
 systemctl stop $CROPUSER #To stop cropcpoind service  
 systemctl is-enabled $CROPUSER #To check cropcoind service is enabled on boot  
 ```  
-
+If you need to resync the wallet, run the following commands as **root**:
+```
+CROPUSER=cropcoin  #replace cropcoin with the MN username you want to resync
+systemctl stop $CROPUSER
+rm -r /home/$CROPUSER/.cropcoin/{banlist.dat,blk0001.dat,database,db.log,mncache.dat,peers.dat,smsgDB,smsg.ini,txleveldb}
+systemctl start $CROPUSER
 ***
-  
+
+## Donations:
+
 Any donation is highly appreciated  
 
 **CROP**: cKH8Gea49ZtNLLV1Q4zcQaFY7K1uQ2ki5s  
