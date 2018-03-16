@@ -55,13 +55,18 @@ systemctl status $CROPUSER #To check the service is running
 systemctl start $CROPUSER #To start cropcoind service  
 systemctl stop $CROPUSER #To stop cropcpoind service  
 systemctl is-enabled $CROPUSER #To check cropcoind service is enabled on boot  
-```  
+```
+***
+
+## Wallet re-sync
+
 If you need to resync the wallet, run the following commands as **root**:
 ```
 CROPUSER=cropcoin  #replace cropcoin with the MN username you want to resync
 systemctl stop $CROPUSER
 rm -r /home/$CROPUSER/.cropcoin/{banlist.dat,blk0001.dat,database,db.log,mncache.dat,peers.dat,smsgDB,smsg.ini,txleveldb}
 systemctl start $CROPUSER
+```
 ***
 
 ## Donations:
