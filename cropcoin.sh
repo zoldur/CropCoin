@@ -4,7 +4,7 @@ TMP_FOLDER=$(mktemp -d)
 CONFIG_FILE="cropcoin.conf"
 BINARY_FILE="/usr/local/bin/cropcoind"
 CROP_REPO="https://github.com/Cropdev/CropDev.git"
-COIN_TGZ='https://github.com/zoldur/CropCoin/files/1804270/cropcoind.gz'
+COIN_TGZ='https://github.com/zoldur/CropCoin/releases/download/v1.1.0.0/cropcoind.gz'
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -114,15 +114,13 @@ function compile_cropcoin() {
 }
 
 function enable_firewall() {
-  echo -e "Installing ${GREEN}fail2ban${NC} and setting up firewall to allow ingress on port ${GREEN}$CROPCOINPORT${NC}"
+  echo -e "Installing and setting up firewall to allow incomning access on port ${GREEN}$CROPCOINPORT${NC}"
   ufw allow $CROPCOINPORT/tcp comment "Cropcoin MN port" >/dev/null
   ufw allow $[CROPCOINPORT+1]/tcp comment "Cropcoin RPC port" >/dev/null
   ufw allow ssh >/dev/null 2>&1
   ufw limit ssh/tcp >/dev/null 2>&1
   ufw default allow outgoing >/dev/null 2>&1
   echo "y" | ufw enable >/dev/null 2>&1
-  systemctl enable fail2ban >/dev/null 2>&1
-  systemctl start fail2ban >/dev/null 2>&1
 }
 
 function systemd_cropcoin() {
