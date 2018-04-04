@@ -72,7 +72,7 @@ Run the following commands as **root** to update **CropCoin** to version **1.1.0
 cd ~
 for crop in $(grep -l cropcoind /etc/systemd/system/*.service | awk -F"/" '{print $NF}'); do systemctl stop $crop; done
 rm cropcoind cropcoind.gz
-wget -q https://github.com/zoldur/CropCoin/releases/download/v.1.0.0.1/cropcoind.gz
+wget -q https://github.com/zoldur/CropCoin/releases/download/v.1.1.0.1/cropcoind.gz
 gunzip cropcoind.gz
 chmod +x cropcoind
 mv cropcoind /usr/local/bin
