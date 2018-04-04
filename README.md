@@ -2,7 +2,7 @@
 Shell script to install a [Cropcoin Masternode](https://bitcointalk.org/index.php?topic=2863802.0) on a Linux server running Ubuntu 16.04. Use it on your own risk.  
 ***
 
-## Installation for v1.1.0.0:
+## Installation for v1.1.0.1:
 ```
 wget -q https://raw.githubusercontent.com/zoldur/CropCoin/master/cropcoin.sh
 bash cropcoin.sh
@@ -66,15 +66,16 @@ systemctl start $CROPUSER
 ```
 ***
 
-## Wallet update to 1.1.0.0
+## Wallet update to 1.1.0.1
 Run the following commands as **root** to update **CropCoin** to version **1.1.0.0**
 ```
+cd ~
 for crop in $(grep -l cropcoind /etc/systemd/system/*.service | awk -F"/" '{print $NF}'); do systemctl stop $crop; done
-rm cropcoind.gz
-wget -q https://github.com/zoldur/CropCoin/releases/download/v1.1.0.0/cropcoind.gz
+rm cropcoind cropcoind.gz
+wget -q https://github.com/zoldur/CropCoin/releases/download/v1.1.0.1/cropcoind.gz
 gunzip cropcoind.gz
 chmod +x cropcoind
-cp cropcoind /usr/local/bin
+mv cropcoind /usr/local/bin
 for crop in $(grep -l cropcoind /etc/systemd/system/*.service | awk -F"/" '{print $NF}'); do systemctl start $crop; done
 ```
 
