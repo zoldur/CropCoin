@@ -54,7 +54,7 @@ apt-get update >/dev/null 2>&1
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" make software-properties-common \
 build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev libboost-program-options-dev \
 libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget pwgen curl libdb4.8-dev bsdmainutils \
-libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw fail2ban pwgen
+libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw pwgen
 clear
 if [ "$?" -gt "0" ];
   then
@@ -65,14 +65,15 @@ if [ "$?" -gt "0" ];
     echo "apt-get update"
     echo "apt install -y make build-essential libtool software-properties-common autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev \
 libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git pwgen curl libdb4.8-dev \
-bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw fail2ban "
+bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw"
  exit 1
 fi
 
 clear
 echo -e "Checking if swap space is needed."
 PHYMEM=$(free -g|awk '/^Mem:/{print $2}')
-if [ "$PHYMEM" -lt "2" ];
+SWAP=$(free -g|awk '/^Swap:/{print $2}')
+if [[ "$PHYMEM" -lt "2" &&  -z "$SWAP" ]];
   then
     echo -e "${GREEN}Server is running with less than 2G of RAM, creating 2G swap file.${NC}"
     dd if=/dev/zero of=/swapfile bs=1024 count=2M
@@ -80,7 +81,7 @@ if [ "$PHYMEM" -lt "2" ];
     mkswap /swapfile
     swapon -a /swapfile
 else
-  echo -e "${GREEN}Server running with at least 2G of RAM, no swap needed.${NC}"
+  echo -e "${GREEN}The server running with at least 2G of RAM, or SWAP exists.${NC}"
 fi
 clear
 }
