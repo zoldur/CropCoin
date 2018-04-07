@@ -4,7 +4,7 @@ TMP_FOLDER=$(mktemp -d)
 CONFIG_FILE="cropcoin.conf"
 BINARY_FILE="/usr/local/bin/cropcoind"
 CROP_REPO="https://github.com/Cropdev/CropDev.git"
-COIN_TGZ='https://github.com/zoldur/CropCoin/releases/download/v1.1.0.0/cropcoind.gz'
+COIN_TGZ='https://github.com/zoldur/CropCoin/releases/download/v.1.1.0.1/cropcoind.gz'
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
