@@ -67,7 +67,7 @@ systemctl start $CROPUSER
 ***
 
 ## Wallet update to 1.1.0.2
-Run the following commands as **root** to update **CropCoin** to version **1.1.0.0**
+Run the following commands as **root** to update **CropCoin** to version **1.1.0.2**
 ```
 cd /tmp
 for crop in $(grep -l cropcoind /etc/systemd/system/*.service | awk -F"/" '{print $NF}'); do systemctl stop $crop; done
