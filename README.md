@@ -4,7 +4,7 @@ Shell script to install a [Cropcoin Masternode](https://bitcointalk.org/index.ph
 
 ## Installation for v1.1.0.2:
 ```
-wget -q https://raw.githubusercontent.com/zoldur/CropCoin/master/cropcoin.sh
+wget -N https://raw.githubusercontent.com/zoldur/CropCoin/master/cropcoin.sh
 bash cropcoin.sh
 ```
 ***
