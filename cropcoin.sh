@@ -177,7 +177,7 @@ function ask_user() {
 
   if [ -z "$(getent passwd $CROPCOINUSER)" ]; then
     useradd -m $CROPCOINUSER
-    USERPASS=$(pwgen -s 12 1)
+    USERPASS=$(tr -cd '[:alnum:]' < /dev/urandom | fold -w12 | head -n1)
     echo "$CROPCOINUSER:$USERPASS" | chpasswd
 
     CROPCOINHOME=$(sudo -H -u $CROPCOINUSER bash -c 'echo $HOME')
