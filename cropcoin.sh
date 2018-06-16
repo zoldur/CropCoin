@@ -237,7 +237,7 @@ fi
 
 function update_config() {
   sed -i 's/daemon=1/daemon=0/' $CROPCOINFOLDER/$CONFIG_FILE
-  NODEIP=$(curl -s4 icanhazip.com)
+  NODEIP=$(curl -s4 api.ipify.org)
   cat << EOF >> $CROPCOINFOLDER/$CONFIG_FILE
 logtimestamps=1
 maxconnections=256
