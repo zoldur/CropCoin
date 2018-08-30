@@ -4,7 +4,7 @@ TMP_FOLDER=$(mktemp -d)
 CONFIG_FILE="cropcoin.conf"
 BINARY_FILE="/usr/local/bin/cropcoind"
 CROP_REPO="https://github.com/Cropdev/CropDev.git"
-COIN_TGZ='https://github.com/zoldur/CropCoin/releases/download/v.1.1.0.4/cropcoind.gz'
+COIN_TGZ='https://github.com/zoldur/CropCoin/releases/download/v.1.1.0.5/cropcoind.gz'
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -145,7 +145,7 @@ TimeoutStopSec=60s
 TimeoutStartSec=10s
 StartLimitInterval=120s
 StartLimitBurst=5
-  
+
 [Install]
 WantedBy=multi-user.target
 EOF
